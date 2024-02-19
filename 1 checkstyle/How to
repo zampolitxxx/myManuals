@@ -1,0 +1,13 @@
+в build.gradle.kts прописываем зависимость:
+
+в корневом каталоге создаем config/checkstyle (это именно каталоги а не пакеты, не должно быть так: config.checkstyle!)
+в этом каталоге создаем файл checkstyle.xml
+либо скачиваем этот файл из https://github.com/hexlet-components/java-spring-blog/blob/main/config/checkstyle/checkstyle.xml
+
+задачи появляются в меню gradle:
+other/checkstyleMain или other/checkstyleTest
+
+если возникают косяки, можно посмотреть стэктрэйс задачи:
+.gradlew checkstyleMain --stacktrace
+.gradlew checkstyleTest --stacktrace
+

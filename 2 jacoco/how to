@@ -1,0 +1,94 @@
+1) 	заходим на сайт https://codeclimate.com/ и выбираем login -> quality
+	выбираем Opensource и выбираем нужный репозиторий из github
+
+-------------------------------------------------------------------------------
+
+2) 	Заходим в RepoSettings  на вкладку Test Coverage
+	Внизу будет Test Reporter ID. Его надо запомнить.
+
+-------------------------------------------------------------------------------
+
+3) 	Переходим на GitHub
+	Settings -> Secrets and Variables -> Actions
+	Нажимаем кнопку New Repository Secret и добавляем новый, взятый из codeclimate
+	Называем его CC_TEST_REPORTER_ID (название должно совпадать с файлом my.yml который мы 
+	добавляем в каталог .github/workflows/my.yml)
+	
+	со следующим содержимым:
+	
+name: My workflow
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-java@v4.0.0
+        with:
+          java-version: '20'
+          distribution: 'temurin'
+      - name: Build with gradle
+        uses: gradle/gradle-build-action@v3.1.0
+        with:
+          gradle-version: 8.4
+          arguments: build
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+          JACOCO_SOURCE_PATH: ${{github.workspace}}/src/main/java
+        with:
+          coverageCommand: make report
+          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+          
+-------------------------------------------------------------------------------
+          
+4) Добавляем Makefile, через который будет запущена генерация отчета:
+
+lint:
+	./gradlew checkstyleMain checkstyleTest
+
+test:
+	./gradlew test
+
+report:
+	./gradlew jacocoTestReport
+
+-------------------------------------------------------------------------------
+
+5) В файле build.gradle.kts добавляем нужные таски и плагины:
+
+plugins {
+    checkstyle
+    jacoco
+}
+
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
+    }
+}
+
+-------------------------------------------------------------------------------
+
+6) Добавляем бейджик в README.md для Codeclimate:
+
+Идем на Codeclimate -> Repo Settings -> Badges
+Копируем два бейджика из вкладки Markdown в Readme.md
+
+-------------------------------------------------------------------------------
