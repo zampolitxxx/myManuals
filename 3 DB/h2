@@ -1,0 +1,46 @@
+подключаем зависимости для БД в build.gradle.kts:
+
+dependencies {
+    implementation("com.h2database:h2:2.2.224")
+}
+------------------------------------------------------------------------
+По умолчанию Spring boot подключается с пользователем sa и пустым паролем
+Мы можем изменить это:
+
+application.properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+------------------------------------------------------------------------
+или application.yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+------------------------------------------------------------------------
+Если хотим, чтобы сохранялось в файл, меняем datasource url:
+spring.datasource.url=jdbc:h2:file:/data/demo
+или 
+spring:
+  datasource:
+    url: jdbc:h2:file:/data/demo
+------------------------------------------------------------------------
+Чтобы включить встроенную консоль с графическим интерфейсом для просмотра 
+содержимого базы данных и выполнения SQL-запросов:
+
+spring.h2.console.enabled=true
+Дальше получаем доступ к данным через браузер:
+http://localhost:8080/h2-console
+------------------------------------------------------------------------
+Можно задать путь к консоли:
+spring.h2.console.path=/h2-console
+Предотвратить вывод трассировки:
+spring.h2.console.settings.trace=false		
+Отключить удаленный доступ:
+spring.h2.console.settings.web-allow-others=false
