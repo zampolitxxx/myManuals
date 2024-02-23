@@ -1,0 +1,6 @@
+Как запретить в Intellij Idea объединение импортов в *
+Settings -> Editor -> Code Style -> Java -> вкладка Imports
+указываем количество импортов, при котором будет появляться *
+class count to use import with '*' 			ставим например 500
+Names count to use static import with '*' 	ставим например 500
+------------------------------------------------------------------------
