@@ -19,3 +19,9 @@ sudo usermod -G vboxusers -a zampolit
 ```bash
 groups zampolit
 ```
+Установка дополнений гостевой ОС
+Перед запуском гостевой ОС переходим в настройки VBox
+Настроить => Носители => SATA => Добавить
+Добавляем привод из /usr/share/virtualbox/VBoxGuestAdditions.iso
+```bash
+
